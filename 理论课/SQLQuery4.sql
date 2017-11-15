@@ -1,0 +1,22 @@
+USE GradeManager
+GO
+ALTER TABLE Student 
+ADD Nation Varchar(20)
+GO
+ALTER TABLE Student
+DROP COLUMN Nation
+GO
+INSERT INTO Grade(Sno,Cno,Gmark)
+VALUES ('2001110','3',80)
+GO
+UPDATE Grade SET Gmark = 70
+WHERE Sno = '2001110' 
+GO
+DELETE FROM Grade 
+WHERE Sno = '2001110'
+GO
+CREATE INDEX IX_Class
+ON Student(Clno)
+GO
+DROP INDEX Student.IX_Class
+GO

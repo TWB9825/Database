@@ -1,0 +1,130 @@
+/*实验1 写出用CREATE TABLE语句对四个基本表的定义*/
+
+CREATE DATABASE GradeManager
+	ON PRIMARY
+(
+	NAME = student_data,
+	FILENAME = 'D:\SQL\Base\student_data.mdf',
+	SIZE = 10MB,
+	MAXSIZE = 50MB,
+	FILEGROWTH = 1MB
+)
+LOG ON
+(
+	NAME = student_log,
+	FILENAME = 'D:\SQL\Base\student_log.ldf',
+	SIZE = 2MB,
+	MAXSIZE = 5MB,
+	FILEGROWTH = 1%
+)
+
+
+CREATE TABLE Student
+(
+	Sno Char(7) NOT NULL,
+	Sname VarChar(20) NOT NULL,
+	Ssex Char(2) NOT NULL,
+	Sage smallint ,
+	Clno Char(5) NOT NULL
+)
+
+CREATE TABLE Course
+(
+	Cno Char(1) NOT NULL,
+	Cname VarChar(20) NOT NULL,
+	Credit smallint
+)
+
+CREATE TABLE Class
+(
+	Clno Char(5) NOT NULL,
+	Speciality VarChar(20) NOT NULL,
+	Inyear Char(4) NOT NULL,
+	Number Integer ,
+	Monitor Char(7)
+)
+
+CREATE TABLE Grade
+(
+	Sno Char(7) NOT NULL,
+	Cno Char(1) NOT NULL,
+	Gmark Decimal(4,1)
+)
+
+
+/*实验2 验证四个表结构的SQL定义*/
+
+ALTER TABLE Student
+ADD
+CONSTRAINT S_Prim PRIMARY KEY clustered(Sno),
+CONSTRAINT Ssex_Chk CHECK(Ssex IN ('男','女')),
+CONSTRAINT Sage_Chk CHECK(Sage BETWEEN 14 AND 65)
+GO
+ALTER TABLE Course
+ADD
+CONSTRAINT C_Prim PRIMARY KEY clustered(Cno),
+CONSTRAINT Credit_Chk CHECK(Credit IN (1,2,3,4,5,6))
+GO
+ALTER TABLE Class
+ADD
+CONSTRAINT Cl_Prim PRIMARY KEY clustered(Clno),
+CONSTRAINT Num_Chk CHECK(Number BETWEEN 1 AND 100),
+CONSTRAINT Cl_Fore FOREIGN KEY(Monitor) REFERENCES Student(Sno)
+GO
+ALTER TABLE Grade
+ADD
+CONSTRAINT Grade_Fore1 FOREIGN KEY(Sno) REFERENCES Student(Sno)
+		 ON UPDATE CASCADE
+         ON DELETE CASCADE,
+CONSTRAINT Grade_Fore2 FOREIGN KEY(Cno) REFERENCES Course(Cno)
+		 ON UPDATE CASCADE
+         ON DELETE CASCADE,
+CONSTRAINT Grade_Chk CHECK(Gmark BETWEEN 0 AND 100)
+GO
+ALTER TABLE Student
+ADD
+CONSTRAINT Stu_Fore1 FOREIGN KEY(Clno) REFERENCES Class(Clno)
+		 ON UPDATE CASCADE
+         ON DELETE CASCADE
+GO
+
+/*Grade的外部码*/
+
+USE GradeManager
+GO
+INSERT INTO Class(Clno,Speciality,Inyear)
+VALUES ('00311','计算机软件','2000')
+GO
+INSERT INTO Course(Cno,Cname,Credit)
+VALUES ('3','管理信息系统',2)
+GO
+INSERT INTO Student(Sno,Sname,Ssex,Sage,Clno)
+VALUES ('2001110','小明','男',24,'00311')
+GO
+
+/*实验1 写出各项操作的SQL语句*/
+
+USE GradeManager
+GO
+ALTER TABLE Student 
+ADD Nation Varchar(20)
+GO
+ALTER TABLE Student
+DROP COLUMN Nation
+GO
+INSERT INTO Grade(Sno,Cno,Gmark)
+VALUES ('2001110','3',80)
+GO
+UPDATE Grade SET Gmark = 70
+WHERE Sno = '2001110' 
+GO
+DELETE FROM Grade 
+WHERE Sno = '2001110'
+GO
+CREATE INDEX IX_Class
+ON Student(Clno)
+GO
+DROP INDEX Student.IX_Class
+GO
+
+

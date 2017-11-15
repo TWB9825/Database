@@ -1,27 +1,11 @@
-ALTER TABLE Student
-ADD
-CONSTRAINT S_Prim PRIMARY KEY clustered(Sno),
-CONSTRAINT Ssex_Chk CHECK(Ssex IN ('男','女')),
-CONSTRAINT Sage_Chk CHECK(Sage BETWEEN 14 AND 65)
+USE GradeManager
 GO
-ALTER TABLE Course
-ADD
-CONSTRAINT C_Prim PRIMARY KEY clustered(Cno),
-CONSTRAINT Credit_Chk CHECK(Credit IN (1,2,3,4,5,6))
+INSERT INTO Class(Clno,Speciality,Inyear)
+VALUES ('00311','计算机软件','2000')
 GO
-ALTER TABLE Class
-ADD
-CONSTRAINT Cl_Prim PRIMARY KEY clustered(Clno),
-CONSTRAINT Num_Chk CHECK(Number BETWEEN 1 AND 100),
-CONSTRAINT Cl_Fore FOREIGN KEY(Monitor) REFERENCES Student(Sno)
+INSERT INTO Course(Cno,Cname,Credit)
+VALUES ('3','管理信息系统',2)
 GO
-ALTER TABLE Grade
-ADD
-CONSTRAINT Grade_Fore1 FOREIGN KEY(Sno) REFERENCES Student(Sno),
-CONSTRAINT Grade_Fore2 FOREIGN KEY(Cno) REFERENCES Course(Cno),
-CONSTRAINT Grade_Chk CHECK(Gmark BETWEEN 0 AND 100)
-GO
-ALTER TABLE Student
-ADD
-CONSTRAINT Stu_Fore1 FOREIGN KEY(Clno) REFERENCES Class(Clno)
+INSERT INTO Student(Sno,Sname,Ssex,Sage,Clno)
+VALUES ('2001110','小明','男',24,'00311')
 GO
